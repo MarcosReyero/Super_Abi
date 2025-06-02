@@ -28,7 +28,8 @@ var config = {
         key: 'level-1',
         preload: preload,
         create: create,
-        update: update
+        update: update,
+        
     },
     version: '0.7.3'
 };
@@ -137,8 +138,18 @@ function preload() {
     });
     percentText.setOrigin(0.5, 0.5);
     
+  // **Carga de imágenes del parallax**
+    this.load.image('sky', 'assets/scenery/parallax/sky.png');
+    this.load.image('hill1', 'assets/scenery/parallax/hill1.png');
+    this.load.image('hill2', 'assets/scenery/parallax/hill2.png');
+    this.load.image('hill3', 'assets/scenery/parallax/hill3.png');
+    this.load.image('hill4', 'assets/scenery/parallax/hill4.png');
+    this.load.image('hill5', 'assets/scenery/parallax/hill5.png');
+
+
+
     this.load.on('progress', function (value) {
-        percentText.setText(value * 99 >= 99 ? 'Generating world...' : 'Loading... ' + parseInt(value * 99) + '%');
+        percentText.setText(value * 99 >= 99 ? 'Cargando el mundo...' : 'Puto el que Lee... ' + parseInt(value * 99) + '%');
         progressBar.clear();
         progressBar.fillStyle(0xffffff, 1);
         progressBar.fillRoundedRect(screenWidth / 2.45, screenHeight / 2 * 1.07, screenWidth / 5.6 * value, screenHeight / 34.5, 5);
@@ -399,53 +410,33 @@ function generateRandomCoordinate(entitie = false, ground = true) {
 
 function drawWorld() {
     //Drawing scenery props
+this.add.rectangle(0, screenHeight - platformHeight, worldWidth, 10, 0x000000).setOrigin(0, 1).setDepth(-5);
 
-    //> Drawing the Sky
-    this.add.rectangle(screenWidth, 0,worldWidth, screenHeight, isLevelOverworld ? 0x8585FF : 0x000000).setOrigin(0).depth = -1;
+    // Drawing the sky
 
-    let propsY = screenHeight - platformHeight;
+    //> Parallax Sky and Hills
+const propsY = screenHeight - platformHeight;
 
-    if (isLevelOverworld) {
-        //> Clouds
-        for (i = 0; i < Phaser.Math.Between(Math.trunc(worldWidth / 760), Math.trunc(worldWidth / 380)); i++) {
-            let x = generateRandomCoordinate(false, false);
-            let y = Phaser.Math.Between(screenHeight / 80, screenHeight / 2.2);
-            if (Phaser.Math.Between(0, 10) < 5) {
-                this.add.image(x, y, 'cloud1').setOrigin(0).setScale(screenHeight / 1725);
-            } else {
-                this.add.image(x, y, 'cloud2').setOrigin(0).setScale(screenHeight / 1725);
-            }
-        }
+// 1. Fondo de cielo que se repite (más lejano)
+    this.add.tileSprite(0, 0, worldWidth, screenHeight, 'sky')
+        .setOrigin(0)
+        .setScrollFactor(0)
+        .setDepth(-6)
+        .setScale(2); // agranda la imagen 2x (ajusta según necesites)
 
-        //> Mountains
-        for (i = 0; i < Phaser.Math.Between(worldWidth / 6400, worldWidth / 3800); i++) {
-            let x = generateRandomCoordinate();
+    // 2. Capas de colinas (parallax)
+    const hillLayers = ['hill1', 'hill2', 'hill3', 'hill4', 'hill5'];
+    const scrollFactors = [0.1, 0.2, 0.35, 0.5, 0.65]; // lejanía a cercanía
+    const hillHeight = 256;
+    
 
-            if (Phaser.Math.Between(0, 10) < 5) {
-                this.add.image(x, propsY, 'mountain1').setOrigin(0, 1).setScale(screenHeight / 517);
-            } else {
-                this.add.image(x, propsY, 'mountain2').setOrigin(0, 1).setScale(screenHeight / 517);
-            }
-        }
-        
-        //> Bushes
-        for (i = 0; i < Phaser.Math.Between(Math.trunc(worldWidth / 960), Math.trunc(worldWidth / 760)); i++) {
-            let x = generateRandomCoordinate();
-
-            if (Phaser.Math.Between(0, 10) < 5) {
-                this.add.image(x, propsY, 'bush1').setOrigin(0, 1).setScale(screenHeight / 609);
-            } else {
-                this.add.image(x, propsY, 'bush2').setOrigin(0, 1).setScale(screenHeight / 609);
-            }
-        }
-
-        //> Fences
-        for (i = 0; i < Phaser.Math.Between(Math.trunc(worldWidth / 4000), Math.trunc(worldWidth / 2000)); i++) {
-            let x = generateRandomCoordinate();
-
-            this.add.tileSprite(x, propsY, Phaser.Math.Between(100, 250), 35, 'fence').setOrigin(0, 1).setScale(screenHeight / 863);
-        }
-    }
+    hillLayers.forEach((key, index) => {
+        this.add.tileSprite(0, propsY, worldWidth, hillHeight, key)
+            .setOrigin(0, 1)
+            .setScrollFactor(scrollFactors[index])
+            .setDepth(-4 + index)
+            .setScale(1, 1);
+    });
 
     //> Final flag
     this.finalFlagMast = this.add.tileSprite(worldWidth - (worldWidth / 30), propsY, 16, 167, 'flag-mast').setOrigin(0, 1).setScale(screenHeight / 400);
@@ -525,6 +516,14 @@ function generateLevel() {
             this.fallProtectionGroup.add(this.add.rectangle(pieceStart + platformPiecesWidth * 2, screenHeight - platformHeight, 5, 5).setOrigin(0, 1));
             this.fallProtectionGroup.add(this.add.rectangle(pieceStart, screenHeight - platformHeight, 5, 5).setOrigin(1, 1));
         }
+
+        this.add.rectangle(
+            pieceStart,                // posición X (inicio del hoyo)
+            screenHeight - platformHeight / 2, // posición Y centrado en el fondo
+            platformPiecesWidth * 2,   // ancho del hoyo
+            platformHeight * 1,        // altura visual del hoyo
+            0x000000                   // color negro
+        ).setOrigin(0, 0.5).setDepth(1); // profundidad para que quede debajo del jugador
         pieceStart += platformPiecesWidth * 2;
     }
 

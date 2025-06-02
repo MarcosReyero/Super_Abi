@@ -1,8 +1,13 @@
+let love = 42;
 function createHUD() {
     let posY = screenWidth / 23;
 
     this.scoreText = this.add.text(screenWidth / 40, posY, '', { fontFamily: 'pixel_nums', fontSize: (screenWidth / 65), align: 'left'});
     this.scoreText.setScrollFactor(0).depth = 5;
+
+
+    this.loveText = this.add.text(screenWidth / 4, posY, 'TE AMO', { fontFamily: 'pixel_nums',fontSize: (screenWidth / 65),align: 'center'}).setOrigin(0.5, 0);
+    this.loveText.setScrollFactor(0).depth = 6;
 
     this.highScoreText = this.add.text(screenWidth / 2, posY, 'HIGH SCORE\n 000000', { fontFamily: 'pixel_nums', fontSize: (screenWidth / 65), align: 'center'}).setOrigin(0.5, 0);
     this.highScoreText.setScrollFactor(0).depth = 5;
@@ -16,12 +21,21 @@ function createHUD() {
     }
     
     updateScore.call(this);
+    updateLove.call(this);
+
 }
 
 function updateScore() {
     if (!this.scoreText) return;
 
-    this.scoreText.setText('MARIO\n' + score.toString().padStart(6, '0'));
+    this.scoreText.setText('ABI\n' + score.toString().padStart(6, '0'));
+}
+
+
+function updateLove() {
+    if (!this.loveText) return;
+
+    this.loveText.setText('TE AMO\n MI AMOR');
 }
 
 function updateTimer() {
@@ -107,9 +121,9 @@ function gameOverScreen(outOfTime=false) {
         duration: 200,
         alpha: 1
     });
-    this.add.bitmapText(screenCenterX, screenHeight / 3, 'carrier_command', outOfTime ? 'TIME UP' : 'GAME OVER', screenWidth / 30).setOrigin(0.5).depth = 5;
-    this.add.bitmapText(screenCenterX, screenHeight / 2, 'carrier_command', '> PLAY AGAIN', screenWidth / 50).setOrigin(0.5).setInteractive().on('pointerdown', () => location.reload()).depth = 5;
-    this.add.bitmapText(screenCenterX, screenHeight / 1.7, 'carrier_command', '> SCREENSHOT', screenWidth / 50).setOrigin(0.5).setInteractive().on('pointerdown', () => getScreenshot()).depth = 5;
+    this.add.bitmapText(screenCenterX, screenHeight / 3, 'carrier_command', outOfTime ? 'TIME UP' : 'PERDISTE Linda', screenWidth / 30).setOrigin(0.5).depth = 5;
+    this.add.bitmapText(screenCenterX, screenHeight / 2, 'carrier_command', '> OTRA VE', screenWidth / 50).setOrigin(0.5).setInteractive().on('pointerdown', () => location.reload()).depth = 5;
+    this.add.bitmapText(screenCenterX, screenHeight / 1.7, 'carrier_command', '> CAPTURA', screenWidth / 50).setOrigin(0.5).setInteractive().on('pointerdown', () => getScreenshot()).depth = 5;
 }
 
 function gameOverFunc() {
@@ -172,7 +186,7 @@ function winScreen() {
         duration: 300,
         alpha: 1
     });
-    this.add.bitmapText(screenCenterX, screenHeight / 3, 'carrier_command', 'YOU WON!', screenWidth / 30).setOrigin(0.5).depth = 5;
-    this.add.bitmapText(screenCenterX, screenHeight / 2, 'carrier_command', '> PLAY AGAIN', screenWidth / 50).setOrigin(0.5).setInteractive().on('pointerdown', () => location.reload()).depth = 5;
-    this.add.bitmapText(screenCenterX, screenHeight / 1.7, 'carrier_command', '> SCREENSHOT', screenWidth / 50).setOrigin(0.5).setInteractive().on('pointerdown', () => getScreenshot()).depth = 5;
+    this.add.bitmapText(screenCenterX, screenHeight / 3, 'carrier_command', 'GANASTE, AL FIN!', screenWidth / 30).setOrigin(0.5).depth = 5;
+    this.add.bitmapText(screenCenterX, screenHeight / 2, 'carrier_command', '> OTRA VE', screenWidth / 50).setOrigin(0.5).setInteractive().on('pointerdown', () => location.reload()).depth = 5;
+    this.add.bitmapText(screenCenterX, screenHeight / 1.7, 'carrier_command', '> CAPTURA', screenWidth / 50).setOrigin(0.5).setInteractive().on('pointerdown', () => getScreenshot()).depth = 5;
 }

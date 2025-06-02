@@ -1,4 +1,5 @@
-let title = "Super Mario Phaser";
+let title = "Super Abi World";
+// This file is part of the Abi Phaser project.
 let index = 0;
 let direction = 1;
 

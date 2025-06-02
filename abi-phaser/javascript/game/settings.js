@@ -115,7 +115,6 @@ function drawSettingsMenu() {
 
     sliderDot.slider.on('valuechange', function() {
         sliderPercentageText.setText(Math.trunc(sliderDot.slider.value * 100));
-        localStorage.setItem('volume', Math.trunc(sliderDot.slider.value * 100))
     });
 
     if (localStorage.getItem('volume')) {
